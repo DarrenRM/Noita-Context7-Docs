@@ -1,0 +1,36 @@
+---
+title: Statue Trap Entity
+category: scripts
+---
+
+# Statue Trap Entity
+
+This script defines a trap that spawns a statue and a dust explosion when a player unit enters its radius.
+
+## Key Attributes
+
+*   **Activation Radius:** The trap activates when a "player_unit" is within 32 units of its position.
+*   **Spawned Entities:**
+    *   `data/entities/animals/statue.xml`: Spawns a statue.
+    *   `data/entities/particles/dust_explosion.xml`: Spawns a dust explosion effect.
+*   **Sound Effect:** Plays `animals/statue/appear` from `data/audio/Desktop/animals.bank` upon activation.
+*   **Self-Destruction:** The trap entity is killed after activation.
+
+## Lua Script
+
+```lua
+dofile_once("data/scripts/lib/utilities.lua")
+
+local entity_id    = GetUpdatedEntityID()
+local pos_x, pos_y = EntityGetTransform( entity_id )
+
+local targets = EntityGetInRadiusWithTag( pos_x, pos_y, 32, "player_unit" )
+
+if ( targets ~= nil ) and ( #targets > 0 ) then
+	EntityLoad( "data/entities/animals/statue.xml", pos_x, pos_y )
+	EntityLoad( "data/entities/particles/dust_explosion.xml", pos_x, pos_y )
+	EntityKill( entity_id )
+	
+	GamePlaySound( "data/audio/Desktop/animals.bank", "animals/statue/appear", pos_x, pos_y )
+end
+```
